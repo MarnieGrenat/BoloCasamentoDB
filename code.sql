@@ -147,3 +147,35 @@ FROM Fornecedores f
 JOIN PedidosFornecimento pf ON f.id_fornecedor = pf.id_fornecedor
 JOIN Materiais m ON pf.id_material = m.id_material
 WHERE pf.data_pedido > TO_DATE('2023-09-01', 'YYYY-MM-DD');
+
+------------------ Consultas Opcionais -----------------------------
+
+--- Consulta 1 V2 (Junção de pelo menos 2 tabelas, filtradas e ordenadas)
+
+SELECT c.nome AS nome_cliente, e.cidade AS cidade_endereco, m.nome_material AS nome_material
+FROM Clientes c
+JOIN Enderecos e ON c.endereco_id = e.id_endereco
+JOIN PedidosClientes pc ON c.id_cliente = pc.id_cliente
+JOIN Estatuetas est ON pc.id_estatua = est.id_estatua
+JOIN Materiais m ON est.id_material = m.id_material
+WHERE pc.status_producao <> 'Concluido'
+ORDER BY c.nome, e.cidade;
+
+
+--- Consulta 2 V2 (Consulta com sub-consulta)
+
+SELECT id_cliente, nome, (
+    SELECT AVG(quantidade_em_estoque)
+    FROM Materiais
+) AS media_estoque
+FROM Clientes
+WHERE id_cliente = 1;
+
+
+--- Consulta 3 V2 (Consulta com uso de operadores de conjuntos (UNION))
+
+SELECT nome_fornecedor, contato
+FROM Fornecedores
+UNION
+SELECT nome, contato
+FROM Artistas;
